@@ -5,7 +5,6 @@ import { Box, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 const FamilyForm: React.FC = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle form submission logic here
     console.log('Family name submitted');
   };
 

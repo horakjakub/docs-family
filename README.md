@@ -3,8 +3,7 @@
 Easy way to share you documents with your family 
 
 
-    - Create your family
-
+- Create your family
 - Siging/Login page 
 - View your family  
 - Welcome Page if there is no 

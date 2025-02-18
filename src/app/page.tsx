@@ -6,9 +6,8 @@ async function loadAuthSession(): Promise<void> {
   await delay();
 }
 
-async function getData() {
+async function getFamilyData() {
   "use server";
-  console.log("TADAM", process.env.DATABASE_URL);
   const sql = neon(process.env.DATABASE_URL);
   const response = await sql`SELECT name FROM families`;
   return response;
