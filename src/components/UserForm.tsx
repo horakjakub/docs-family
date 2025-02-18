@@ -1,12 +1,14 @@
-"use client"
-import { Box, Button, Input } from '@chakra-ui/react';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
+"use client";
+import { Box, Button, Input } from "@chakra-ui/react";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import delay from "@/utils/delay";
+import { redirect } from "next/navigation";
 
-const FormComponent: React.FC = () => {
-  const handleSubmit = (event: React.FormEvent) => {
+const UserForm: React.FC = () => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted');
+    await delay();
+    redirect("create-family");
   };
 
   return (
@@ -28,4 +30,4 @@ const FormComponent: React.FC = () => {
   );
 };
 
-export default FormComponent;
+export default UserForm;
