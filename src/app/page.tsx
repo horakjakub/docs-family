@@ -1,27 +1,34 @@
-import delay from "@/utils/delay";
-import { neon } from "@neondatabase/serverless";
-import { redirect } from "next/navigation";
+"use client";
+import { redirect, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-async function loadAuthSession(): Promise<void> {
-  await delay();
+function loadLoggedUser(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("loggedUser");
 }
 
-async function getFamilyData() {
-  "use server";
-  const sql = neon(process.env.DATABASE_URL);
-  const response = await sql`SELECT name FROM families`;
-  return response;
-}
+export default function Home() {
+  const searchParams = useSearchParams();
+  const user = loadLoggedUser();
+  const paramsUser = searchParams.get("email");
+  const loggedUser = user || paramsUser;
+  useEffect(() => {
+    if (user || (user && !paramsUser)) return;
+    if (typeof window === "undefined") return;
+    localStorage.setItem("loggedUser", paramsUser as string);
+  }, [user, paramsUser]);
+  if (!loggedUser) redirect("create-user");
 
-export default async function Home() {
-  await loadAuthSession();
-  const data = await getData();
-
-  redirect('create-user')
-  
   return (
-      <div>
-        HOME SWEET HOME 
-      </div>
+    <>
+      <div>HOME SWEET HOME</div>
+      <button
+        onClick={() => {
+          localStorage.removeItem("loggedUser");
+        }}
+      >
+        CLEAR
+      </button>
+    </>
   );
 }
