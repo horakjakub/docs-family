@@ -26,3 +26,4 @@ export const submitUser = async (formData: FormData) => {
 
   redirect(`/?email=${email}`)
 };
+

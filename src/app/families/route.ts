@@ -9,13 +9,34 @@ interface Family {
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const familyName = url.searchParams.get('name');
+  const familyName = url.searchParams.get("name");
+  const userId = url.searchParams.get("userId");
 
   try {
     const sql = neon(process.env.DATABASE_URL);
 
     if (familyName) {
-      const data = await sql<Family[]>`SELECT family_id, name FROM families WHERE name = ${familyName}`;
+      const data = await sql<
+        Family[]
+      >`SELECT family_id, name FROM families WHERE name = ${familyName}`;
+      return Response.json({ data });
+    }
+    if (userId) {
+      const users =
+        await sql`SELECT name, user_id, family_id FROM users WHERE user_id = ${userId}`;
+      const user = users[0];
+      if (!user) throw new Error("There is no user with selected id");
+      const { family_id } = user;
+      const familiesData =
+        await sql`SELECT name, family_id FROM families WHERE family_id = ${family_id}`;
+      const members =
+        await sql`SELECT name, email FROM users WHERE family_id = ${family_id}`;
+
+      const data = {
+        name: familiesData[0].name,
+        members,
+      };
+
       return Response.json({ data });
     } else {
       const data = await sql<Family[]>`SELECT family_id, name FROM families`;
@@ -33,7 +54,7 @@ export async function GET(request: Request): Promise<Response> {
 export async function POST(request: NextRequest): Promise<Response> {
   const sql = neon(process.env.DATABASE_URL);
   const { name } = await request.json();
-  console.log('tadmaadfa', name);
+  console.log("tadmaadfa", name);
 
   try {
     await sql`INSERT INTO families (name) VALUES (${name})`;
@@ -42,4 +63,3 @@ export async function POST(request: NextRequest): Promise<Response> {
     return new NextResponse("Error creating family", { status: 500 });
   }
 }
-
